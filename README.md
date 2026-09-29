@@ -1,162 +1,265 @@
-<div align="center">
+<p align="center">
+  <img src="assets/screenshots/product-solution.png" alt="Zomato Multiorder — Product Solution" width="100%">
+</p>
 
-# 📝 Multi-Restaurant Single Checkout — PRD
+<h1 align="center">Zomato Multiorder — PRD Case Study</h1>
 
-### A full product requirements document for letting users order from multiple restaurants in one checkout — written as a Zomato-style feature case study
+<p align="center">
+  <strong>Different cravings. Multiple restaurants. One ordering experience.</strong>
+</p>
 
-![Type](https://img.shields.io/badge/Type-PRD%20Writing%20Sample-6C5CE7?style=flat-square)
-![Role](https://img.shields.io/badge/Role-Product%20Manager-0984E3?style=flat-square)
-![Domain](https://img.shields.io/badge/Domain-Food%20Delivery%20%2F%20Marketplace-00B894?style=flat-square)
-![Sections](https://img.shields.io/badge/Coverage-16%20Sections-E17055?style=flat-square)
-
-**[📄 Read the full PRD](multi-restaurant-order-prd.md)**
-
-</div>
-
----
-
-## TL;DR
-
-Food delivery apps force a hard constraint: one order, one restaurant. That breaks down the moment a group wants different cuisines, or a family has split preferences. This PRD specs a **multi-restaurant single checkout** — one cart, one payment, one delivery experience, spanning multiple restaurants — while keeping each restaurant's fulfillment, pricing, and status tracking fully independent under the hood.
-
-**What this demonstrates:** structuring an ambiguous "let people order from multiple places" idea into a scoped, phased, buildable feature — with explicit tradeoffs on what's *not* in v1 and why.
+<p align="center">
+  <img src="https://img.shields.io/badge/Type-Product_Requirement_Document-E23744?style=flat-square" alt="PRD">
+  <img src="https://img.shields.io/badge/Platform-Mobile_%26_Web-1B9E4B?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/Tools-Gemini_%7C_Stitch_%7C_Antigravity-4285F4?style=flat-square" alt="Tools">
+  <img src="https://img.shields.io/badge/Status-Complete-1B9E4B?style=flat-square" alt="Status">
+</p>
 
 ---
 
-## 📖 Table of Contents
+## About This Project
 
-- [Problem & Objective](#-problem--objective)
-- [Scope](#-scope)
-- [Order Architecture](#-order-architecture)
-- [User Flow](#-user-flow)
-- [Requirements at a Glance](#-requirements-at-a-glance)
-- [Phased Rollout](#-phased-rollout)
-- [Risks & Open Questions](#-risks--open-questions)
-- [What This PRD Demonstrates](#-what-this-prd-demonstrates)
+This is a **product management case study** I built during a Sunday Workshop focused on solving a real problem in food delivery: the inability to order from multiple restaurants in a single flow.
 
----
+I picked Zomato as the product context because the constraint is real — you can't combine items from two restaurants into one order, even when they're 200 meters apart. The result? Families settle for one place, groups compromise, and Zomato leaves money on the table.
 
-## 🔍 Problem & Objective
+This repo contains the full PRD I wrote, the prototypes I designed, and the thinking process behind both.
 
-> Customers can currently order from only one restaurant per order — friction for groups wanting different cuisines, families with mixed tastes, or anyone ordering from two nearby places to save a trip.
-
-**Objective:** one consolidated order across multiple restaurants, single checkout, while each restaurant's operations, delivery tracking, and fulfillment stay fully intact behind the scenes.
-
-**Goals:** increase average order value · improve group-order conversion · reduce friction for mixed-menu ordering · increase orders per session · preserve operational transparency for restaurants and delivery partners.
+> **Note:** This is a case study and concept exploration. I don't work at Zomato — this is my take on how I'd approach the problem as a PM.
 
 ---
 
-## 🎯 Scope
+## Table of Contents
 
-| In Scope (v1) | Explicitly Out of Scope |
-|---|---|
-| Multi-restaurant cart & checkout | Ghost kitchens / shared food prep |
-| Restaurant-level grouping in cart | Cross-restaurant order edits after placement |
-| Per-restaurant payment splitting & settlement | Complex refund flows beyond standard per-restaurant handling |
-| Delivery assignment (single or pooled) | Multi-restaurant loyalty integration |
-| Per-restaurant notifications & receipts | — |
-| Separate prep/dispatch timing per restaurant | — |
-| Delivery **and** pickup support | — |
-
-Being explicit about what's cut from v1 (ghost kitchens, post-order edits, loyalty integration) was as important as defining what's in — it keeps the phase-1 build scoped to something shippable instead of quietly growing into a much larger project.
+- [The Problem](#the-problem)
+- [Solution Overview](#solution-overview)
+- [Visual Case Study](#visual-case-study)
+- [Prototype Screens](#prototype-screens)
+- [How I Used AI in This Process](#how-i-used-ai-in-this-process)
+- [Repository Structure](#repository-structure)
+- [Documents](#documents)
+- [Built With](#built-with)
+- [Author](#author)
 
 ---
 
-## 🏗 Order Architecture
+## The Problem
 
-The core system decision underpinning every other requirement: **one master order containing independent sub-orders**, each mapped to a restaurant.
+Customers on Zomato can only order from **one restaurant per order**. This seems fine until you hit these scenarios:
 
-```mermaid
-flowchart TD
-    A[Customer Cart\nitems from Restaurant A + B] --> B[Single Checkout\none payment, consolidated total]
-    B --> C[Master Order]
-    C --> D[Sub-Order: Restaurant A\nstatus · prep time · receipt]
-    C --> E[Sub-Order: Restaurant B\nstatus · prep time · receipt]
-    D --> F[Delivery Assignment\nsingle or pooled partner]
-    E --> F
-    F --> G[Overall Status +\nPer-Restaurant Sub-Status]
+| Scenario | What Happens Today | What Should Happen |
+|---|---|---|
+| 👨‍👩‍👧‍👦 Family dinner — dad wants biryani, kids want pizza | 2 separate orders, 2 delivery fees, 2 tracking screens | One cart, one checkout, one delivery |
+| 👫 Friends ordering together — different cravings | Someone compromises or everyone orders individually | Add from multiple places, split or combine payment |
+| 🧑‍💻 Solo user — biryani + ice cream from the dessert shop next door | Two orders for two places 200m apart | One delivery partner picks up both |
+
+**The result:** lower average order value, higher drop-off for group orders, and missed revenue from second-restaurant additions.
+
+---
+
+## Solution Overview
+
+Three capabilities, built in sequence (each depends on the one before):
+
+### 1. Multi-Restaurant Cart `P0`
+Add items from 2-3 nearby restaurants into one unified cart. Restaurants must be within a proximity threshold (~300-400m) to qualify as "Multiorder Eligible."
+
+### 2. Single Checkout `P1`
+One payment covers all restaurants. Fee breakdown is fully transparent — you see exactly what each restaurant charges plus a bundled (discounted) delivery fee.
+
+### 3. Coordinated Delivery `P2`
+One delivery partner handles multi-stop pickup. Tracking screen shows parallel prep status per restaurant with a combined ETA.
+
+---
+
+## Visual Case Study
+
+<details>
+<summary><strong>🎯 Problem & User Persona</strong> — Click to expand</summary>
+<br>
+<img src="assets/screenshots/problem-persona.png" alt="Problem Statement and User Persona - Rohan Sharma" width="100%">
+<br><br>
+
+**Primary persona: Rohan Sharma** — 26, Tech Analyst, Bangalore. Orders multiple times a week, frequently for friends/family. His biggest pain: "Ordering for family is painful" because everyone wants something different.
+
+</details>
+
+<details>
+<summary><strong>🗺️ Customer Journey Map</strong> — Click to expand</summary>
+<br>
+<img src="assets/screenshots/customer-journey.png" alt="Customer Journey across Awareness, Consideration, Onboarding, Retention, Loyalty" width="100%">
+<br><br>
+
+Mapped across 5 stages with pain points, touchpoints, and opportunities at each phase. Key insight: the biggest friction is at **Onboarding** (first multiorder) and **Retention** (managing multiple arrival times).
+
+</details>
+
+<details>
+<summary><strong>📊 Competitive Insights & Prioritization</strong> — Click to expand</summary>
+<br>
+<img src="assets/screenshots/competitive-prioritization.png" alt="Competitive benchmark and RICE prioritization" width="100%">
+<br><br>
+
+Compared Zomato vs Swiggy vs EatSure across 7 capabilities. Key insight: Zomato already supports multiple carts — the opportunity is to **unify** them into a coordinated experience. RICE prioritization drives the P0 → P1 → P2 build sequence.
+
+</details>
+
+---
+
+## Prototype Screens
+
+I designed both mobile and web prototypes using [Google Stitch](https://stitch.withgoogle.com/). Each screen maps to a specific step in the user flow.
+
+### 📱 Mobile App Flow (7 Screens)
+
+`Home → Intro → Select Restaurant → Browse Menu → Multi-Cart → Checkout → Track`
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="assets/mobile-prototypes/01-home-multiorder-discovery.png" alt="Home" width="100%"><br>
+      <sub><strong>Home Discovery</strong><br>P0 — Cart</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="assets/mobile-prototypes/02-multiorder-intro-sheet.png" alt="Intro" width="100%"><br>
+      <sub><strong>Intro Sheet</strong><br>P0 — Cart</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="assets/mobile-prototypes/03-restaurant-selection.png" alt="Selection" width="100%"><br>
+      <sub><strong>Restaurant Selection</strong><br>P0 — Cart</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="assets/mobile-prototypes/04-restaurant-menu-active.png" alt="Menu" width="100%"><br>
+      <sub><strong>Menu Browsing</strong><br>P0 — Cart</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/mobile-prototypes/05-multi-restaurant-cart.png" alt="Cart" width="100%"><br>
+      <sub><strong>Multi-Restaurant Cart</strong><br>P0 — Cart</sub>
+    </td>
+    <td align="center">
+      <img src="assets/mobile-prototypes/06-single-checkout.png" alt="Checkout" width="100%"><br>
+      <sub><strong>Single Checkout</strong><br>P1 — Checkout</sub>
+    </td>
+    <td align="center">
+      <img src="assets/mobile-prototypes/07-coordinated-tracking.png" alt="Tracking" width="100%"><br>
+      <sub><strong>Coordinated Tracking</strong><br>P2 — Delivery</sub>
+    </td>
+    <td></td>
+  </tr>
+</table>
+
+### 💻 Desktop Web Flow (5 Screens)
+
+`Home → Restaurants → Menu → Checkout → Track`
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/web-prototypes/01-web-home-discovery.png" alt="Web Home" width="100%"><br>
+      <sub><strong>Home — Hub Pairs & Combos</strong> · P0</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/web-prototypes/02-web-restaurant-discovery.png" alt="Web Restaurants" width="100%"><br>
+      <sub><strong>Restaurant Discovery</strong> · P0</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/web-prototypes/03-web-menu-multiorder.png" alt="Web Menu" width="100%"><br>
+      <sub><strong>Menu with Multiorder Cart</strong> · P0</sub>
+    </td>
+    <td align="center">
+      <img src="assets/web-prototypes/04-web-single-checkout.png" alt="Web Checkout" width="100%"><br>
+      <sub><strong>Single Checkout</strong> · P1</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="assets/web-prototypes/05-web-coordinated-tracking.png" alt="Web Tracking" width="80%"><br>
+      <sub><strong>Coordinated Delivery Tracking</strong> · P2</sub>
+    </td>
+  </tr>
+</table>
+
+> 🔗 **Interactive prototype gallery:** Open [`docs/prototype-showcase.html`](docs/prototype-showcase.html) locally or via GitHub Pages for a click-through experience with zoom.
+
+---
+
+## How I Used AI in This Process
+
+I used AI (Gemini, Stitch, Antigravity) throughout this project — not to write the PRD for me, but as a **thinking partner** that helped me sharpen, challenge, and visualize my ideas.
+
+My rule: **AI refines, I decide.** Every section started with my own draft or direction. AI helped me:
+- Tighten the problem statement language
+- Identify non-goals I hadn't considered
+- Push back on my metric choices (changed my North Star based on AI feedback)
+- Convert product requirements into prototype-ready design prompts
+- Structure the competitive analysis systematically
+
+**What I explicitly avoided:** Using AI to generate the core product thinking. The problem framing, persona, journey stages, prioritization, and solution scoping are my work. AI made them clearer, not different.
+
+📄 **Full workflow documentation:** [`prompts/ai-workflow.md`](prompts/ai-workflow.md) — includes the exact prompts I used, why I phrased them that way, and what I changed vs. kept from AI suggestions.
+
+---
+
+## Repository Structure
+
+```
+├── README.md                      ← You are here
+├── context.md                     ← Product context: problem, persona, journey, competition
+├── plan.md                        ← Execution plan: RICE, requirements, metrics, rollout
+├── docs/
+│   └── prototype-showcase.html    ← Interactive prototype gallery (HTML)
+├── assets/
+│   ├── screenshots/               ← 4 project overview visuals
+│   ├── mobile-prototypes/         ← 7 mobile app screens (PNG)
+│   └── web-prototypes/            ← 5 desktop web screens (PNG)
+├── prompts/
+│   └── ai-workflow.md             ← How AI was used as a PM copilot
+├── design-system/
+│   └── DESIGN.md                  ← Design tokens from Google Stitch
+└── LICENSE
 ```
 
-This structure is what lets the rest of the PRD stay coherent: pricing, notifications, cancellations, and receipts all key off "master order + N sub-orders" rather than needing separate logic per feature.
-
 ---
 
-## 🧭 User Flow
+## Documents
 
-```mermaid
-flowchart LR
-    A[Browse restaurants] --> B[Add items:\nRestaurant A]
-    B --> C[Add items:\nRestaurant B]
-    C --> D[Cart groups\nby restaurant]
-    D --> E[Review subtotals,\nfees, taxes]
-    E --> F[Select address\n& delivery mode]
-    F --> G[Choose payment,\ncheck out once]
-    G --> H[Master order +\nsub-orders created]
-    H --> I[Track overall +\nper-restaurant status]
-    I --> J[Delivery & receipts\nper restaurant]
-```
-
----
-
-## 📋 Requirements at a Glance
-
-The full PRD specs 7 functional areas in detail — summarized here:
-
-| Area | Key Requirement |
+| Document | What It Covers |
 |---|---|
-| **Cart & Catalog** | Groups items by restaurant; blocks adding from closed/out-of-service restaurants |
-| **Checkout** | Single page, per-restaurant subtotals, restaurant-specific *and* order-level promo code support |
-| **Pricing & Fees** | Calculated per-restaurant (delivery, packaging, tax), consolidated into one total, itemized on receipt |
-| **Order Processing** | One master order, independent sub-order statuses, restaurant-level cancellation/refund |
-| **Delivery & Logistics** | Partner assignment by proximity/readiness; supports single pooled partner or separate partners per restaurant |
-| **Notifications** | Aggregated + per-sub-order updates; explicit guidance when one restaurant is delayed but others aren't |
-| **Receipts** | Combined summary + separate per-restaurant receipts, preserving commission/settlement records |
-
-Non-functional requirements cover checkout latency under multi-restaurant load, scalability to a defined max restaurant count per order, graceful partial-failure handling (one restaurant cancels without breaking the order), and PCI-compliant split payment routing.
-
-> Full detail on every requirement: [`multi-restaurant-order-prd.md`](multi-restaurant-order-prd.md)
+| [**context.md**](context.md) | Problem, persona (Rohan Sharma), customer journey, competitive landscape, stakeholders |
+| [**plan.md**](plan.md) | Goals, RICE prioritization, phased rollout, functional & non-functional requirements, success metrics, risks |
+| [**ai-workflow.md**](prompts/ai-workflow.md) | Full AI-assisted PM workflow with prompt reasoning and decision log |
+| [**DESIGN.md**](design-system/DESIGN.md) | Design system tokens — colors, typography, spacing, components |
+| [**Prototype Showcase**](docs/prototype-showcase.html) | Interactive HTML gallery of all 12 prototype screens |
 
 ---
 
-## 🚀 Phased Rollout
+## Built With
 
-| Phase | Delivers |
+| Tool | Purpose |
 |---|---|
-| **Phase 1** | Core multi-restaurant cart, unified checkout, basic sub-orders, separate status tracking, single delivery partner |
-| **Phase 2** | Dynamic delivery routing, advanced promo/loyalty handling, mixed pickup+delivery orders, merchant-facing reporting |
-| **Phase 3** | Cross-restaurant combo promotions, scheduled multi-restaurant orders, smart complementary-restaurant suggestions |
-
-**Success metrics:** multi-restaurant cart conversion rate · AOV vs. single-restaurant orders · cart abandonment rate · time-to-checkout · multi-restaurant cancellation rate · group-ordering NPS.
-
----
-
-## ⚠️ Risks & Open Questions
-
-| Risk | Mitigation |
-|---|---|
-| Complex fee presentation confuses users | Simplify UI; lead with "single checkout, multiple restaurants" messaging |
-| One restaurant's delay drags down the whole order | Surface per-restaurant ETAs; allow partial handoff tracking |
-| Item/restaurant-level cancellation ruins the experience | Easy refunds, alternative suggestions, clear in-app communication |
-| Settlement complexity across multiple vendors | Clear sub-order accounting reusing existing restaurant payout flows |
-
-**Deliberately left open** rather than guessed at: max restaurants per order, whether delivery and pickup restaurants can mix in one order, which restaurant-level offers carry into the flow, and whether the charge appears as one transaction or multiple captures. Flagging these explicitly — instead of picking arbitrary answers — is itself a scoping decision: they need input from payments, ops, and legal before Phase 1 can be finalized.
+| **Google Gemini** | PRD refinement, persona generation, journey mapping, competitive research |
+| **Google Stitch** | UI prototype generation — both mobile and web screens |
+| **VS Code + Antigravity** | Repository structuring, documentation, portfolio preparation |
+| **Markdown** | All documentation written in Markdown for GitHub rendering |
 
 ---
 
-## 🎓 What This PRD Demonstrates
+## Author
 
-- **Scoping an ambiguous idea into a buildable v1** — explicit in/out-of-scope lists, not just a feature wishlist
-- **System-level thinking, not just UI requirements** — the master-order/sub-order architecture is the decision that makes pricing, cancellation, and tracking all consistent
-- **Planning for partial failure** — one restaurant cancelling or running late is treated as an expected case, not an edge case bolted on later
-- **Knowing what not to answer yet** — open questions are surfaced for the right stakeholders rather than resolved with unilateral assumptions
-- **Phased delivery thinking** — separating "must ship" from "makes it great" from "makes it smart"
+**Rehan Sheikh**
+
+This case study was built as part of a PM workshop focused on writing production-quality PRDs with AI-assisted workflows. It demonstrates:
+- Structured product thinking (problem → persona → journey → solution → metrics)
+- RICE-driven prioritization with clear build sequencing
+- Cross-platform prototyping (mobile + web)
+- Transparent AI collaboration methodology
 
 ---
 
-<div align="center">
-
-I'm a **Chemical Engineer transitioning into AI Product Management**, writing PRDs like this one to practice turning ambiguous product problems into scoped, buildable specs.
-
-📂 More case studies and projects on my [GitHub profile](https://github.com/Rehansheikh787).
-
-</div>
+<p align="center">
+  <sub>Made with ☕ and a Sunday Workshop</sub>
+</p>

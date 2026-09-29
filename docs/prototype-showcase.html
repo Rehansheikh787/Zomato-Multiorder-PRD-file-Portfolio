@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Multiorder — Prototype Screens</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8F9FA;
+            color: #1C1C27;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #EAEBED;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 span {
+            color: #E23744;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #FDF1F2;
+            color: #E23744;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(226, 55, 68, 0.15);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #EAEBED;
+            background: #fff;
+            color: #686B78;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+        .tab-btn:last-child { border-radius: 0 8px 8px 0; }
+        .tab-btn:not(:first-child) { border-left: none; }
+
+        .tab-btn.active {
+            background: #E23744;
+            color: #fff;
+            border-color: #E23744;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #FDF1F2;
+            color: #E23744;
+        }
+
+        /* Content */
+        .content {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #686B78;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #1C1C27;
+        }
+
+        /* Screen Grid */
+        .screen-grid {
+            display: none;
+        }
+
+        .screen-grid.active {
+            display: grid;
+        }
+
+        .mobile-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .web-grid {
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
+        }
+
+        /* Screen Card */
+        .screen-card {
+            background: #fff;
+            border: 1px solid #EAEBED;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px -2px rgba(28,28,39,0.04);
+        }
+
+        .screen-card:hover {
+            border-color: #E23744;
+            box-shadow: 0 8px 24px -4px rgba(226,55,68,0.12);
+            transform: translateY(-2px);
+        }
+
+        .screen-card img {
+            width: 100%;
+            display: block;
+            border-bottom: 1px solid #EAEBED;
+        }
+
+        .screen-info {
+            padding: 14px 16px;
+        }
+
+        .screen-info .step {
+            font-size: 11px;
+            font-weight: 700;
+            color: #E23744;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .screen-info .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1C1C27;
+        }
+
+        .screen-info .desc {
+            font-size: 12px;
+            color: #686B78;
+            margin-top: 4px;
+        }
+
+        /* Priority Badge */
+        .priority {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-top: 8px;
+        }
+        .priority.p0 { background: #FDF1F2; color: #E23744; }
+        .priority.p1 { background: #FEF5EA; color: #E5820D; }
+        .priority.p2 { background: #E8F7EE; color: #1B9E4B; }
+
+        /* Flow Arrow Bar */
+        .flow-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 16px 0 24px;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            font-size: 12px;
+            font-weight: 600;
+            color: #686B78;
+            background: #fff;
+            border: 1px solid #EAEBED;
+            padding: 6px 14px;
+            border-radius: 100px;
+            white-space: nowrap;
+        }
+
+        .flow-step.active {
+            background: #E23744;
+            color: #fff;
+            border-color: #E23744;
+        }
+
+        .flow-arrow {
+            color: #EAEBED;
+            font-size: 14px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(28,28,39,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 16px 48px -8px rgba(28,28,39,0.2);
+            position: relative;
+        }
+
+        .modal-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(28,28,39,0.8);
+            color: #fff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-label {
+            padding: 16px 20px;
+            border-top: 1px solid #EAEBED;
+        }
+
+        .modal-label .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .modal-label .desc {
+            color: #686B78;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: #686B78;
+            font-size: 13px;
+            border-top: 1px solid #EAEBED;
+        }
+
+        .footer a {
+            color: #E23744;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .mobile-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .web-grid { grid-template-columns: 1fr; }
+            .header-inner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <h1><span>Zomato</span> Multiorder Prototypes <span class="badge">Case Study</span></h1>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('mobile')">📱 Mobile (7)</button>
+                <button class="tab-btn" onclick="switchTab('web')">💻 Web (5)</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- Mobile Screens -->
+        <div id="mobile-tab" class="screen-grid mobile-grid active">
+            <!-- Flow bar -->
+            <div style="grid-column: 1 / -1;">
+                <p class="section-title">Mobile App Flow</p>
+                <p class="section-subtitle">7 screens — Discovery to Delivery Tracking</p>
+                <div class="flow-bar">
+                    <span class="flow-step active">Home</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Intro</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Select Restaurant</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Browse Menu</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Multi-Cart</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Checkout</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Track</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/01-home-multiorder-discovery.png', 'Home — Multiorder Discovery', 'Entry point with eligible restaurant badges and multiorder hubs')">
+                <img src="../assets/mobile-prototypes/01-home-multiorder-discovery.png" alt="Home screen" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 1</div>
+                    <div class="name">Home — Multiorder Discovery</div>
+                    <div class="desc">Eligible restaurant badges, nearby hubs, category filters</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/02-multiorder-intro-sheet.png', 'Multiorder Intro Sheet', 'Feature explanation bottom sheet for first-time users')">
+                <img src="../assets/mobile-prototypes/02-multiorder-intro-sheet.png" alt="Intro sheet" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 2</div>
+                    <div class="name">Multiorder Intro Sheet</div>
+                    <div class="desc">Feature onboarding — how it works in 3 steps</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/03-restaurant-selection.png', 'Restaurant Selection', 'Multiorder-eligible restaurants with pairing suggestions')">
+                <img src="../assets/mobile-prototypes/03-restaurant-selection.png" alt="Restaurant selection" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 3</div>
+                    <div class="name">Restaurant Selection</div>
+                    <div class="desc">Browse eligible restaurants, see pairing suggestions</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/04-restaurant-menu-active.png', 'Menu — Multiorder Active', 'Restaurant menu with active multiorder indicator')">
+                <img src="../assets/mobile-prototypes/04-restaurant-menu-active.png" alt="Menu browsing" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 4</div>
+                    <div class="name">Menu — Multiorder Active</div>
+                    <div class="desc">Browse menu with synced cart bar showing other restaurant items</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/05-multi-restaurant-cart.png', 'Multi-Restaurant Cart', 'Unified cart with items grouped by restaurant')">
+                <img src="../assets/mobile-prototypes/05-multi-restaurant-cart.png" alt="Multi-restaurant cart" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 5</div>
+                    <div class="name">Multi-Restaurant Cart</div>
+                    <div class="desc">Grouped items, per-restaurant subtotals, bundled delivery fee</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/06-single-checkout.png', 'Single Checkout', 'Unified payment with transparent fee breakdown')">
+                <img src="../assets/mobile-prototypes/06-single-checkout.png" alt="Single checkout" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 6</div>
+                    <div class="name">Single Checkout</div>
+                    <div class="desc">One payment, combined fees, savings highlight</div>
+                    <span class="priority p1">P1 — Checkout</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/mobile-prototypes/07-coordinated-tracking.png', 'Coordinated Tracking', 'Parallel delivery status for all restaurants')">
+                <img src="../assets/mobile-prototypes/07-coordinated-tracking.png" alt="Coordinated tracking" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 7</div>
+                    <div class="name">Coordinated Tracking</div>
+                    <div class="desc">Multi-restaurant timeline, single map, combined ETA</div>
+                    <span class="priority p2">P2 — Delivery</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Web Screens -->
+        <div id="web-tab" class="screen-grid web-grid">
+            <div style="grid-column: 1 / -1;">
+                <p class="section-title">Desktop Web Flow</p>
+                <p class="section-subtitle">5 screens — Full ordering experience on web</p>
+                <div class="flow-bar">
+                    <span class="flow-step active">Home</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Restaurants</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Menu</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Checkout</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">Track</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/web-prototypes/01-web-home-discovery.png', 'Web — Home Discovery', 'Multiorder hub pairs, trending combinations, synchronization guarantee')">
+                <img src="../assets/web-prototypes/01-web-home-discovery.png" alt="Web home" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 1</div>
+                    <div class="name">Home — Multiorder Discovery</div>
+                    <div class="desc">Featured hub pairs, trending combos, sync guarantee</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/web-prototypes/02-web-restaurant-discovery.png', 'Web — Restaurant Discovery', 'Browse and filter multiorder-eligible restaurants')">
+                <img src="../assets/web-prototypes/02-web-restaurant-discovery.png" alt="Web restaurant discovery" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 2</div>
+                    <div class="name">Restaurant Discovery</div>
+                    <div class="desc">Eligible restaurants with distance, ratings, and prep sync info</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/web-prototypes/03-web-menu-multiorder.png', 'Web — Menu with Multiorder', 'Full menu view with active multiorder cart sidebar')">
+                <img src="../assets/web-prototypes/03-web-menu-multiorder.png" alt="Web menu" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 3</div>
+                    <div class="name">Menu — Multiorder Active</div>
+                    <div class="desc">Menu with cart sidebar showing items from multiple restaurants</div>
+                    <span class="priority p0">P0 — Cart</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/web-prototypes/04-web-single-checkout.png', 'Web — Single Checkout', 'Unified checkout with per-restaurant bill breakdown')">
+                <img src="../assets/web-prototypes/04-web-single-checkout.png" alt="Web checkout" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 4</div>
+                    <div class="name">Single Checkout</div>
+                    <div class="desc">Combined bill, delivery savings, one payment</div>
+                    <span class="priority p1">P1 — Checkout</span>
+                </div>
+            </div>
+
+            <div class="screen-card" onclick="openModal('../assets/web-prototypes/05-web-coordinated-tracking.png', 'Web — Coordinated Tracking', 'Map view with parallel delivery timelines')">
+                <img src="../assets/web-prototypes/05-web-coordinated-tracking.png" alt="Web tracking" loading="lazy">
+                <div class="screen-info">
+                    <div class="step">Step 5</div>
+                    <div class="name">Coordinated Order Tracking</div>
+                    <div class="desc">Live map, parallel prep status, combined ETA</div>
+                    <span class="priority p2">P2 — Delivery</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <img id="modal-img" src="" alt="">
+            <div class="modal-label">
+                <div class="name" id="modal-name"></div>
+                <div class="desc" id="modal-desc"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Zomato Multiorder — PRD Case Study by <strong>Rehan Sheikh</strong></p>
+        <p style="margin-top: 8px;">
+            <a href="../context.md">Product Context</a> · 
+            <a href="../plan.md">Execution Plan</a> · 
+            <a href="../README.md">Back to README</a>
+        </p>
+    </footer>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.screen-grid').forEach(grid => grid.classList.remove('active'));
+
+            if (tab === 'mobile') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('mobile-tab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('web-tab').classList.add('active');
+            }
+        }
+
+        function openModal(src, name, desc) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-desc').textContent = desc;
+            document.getElementById('modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e && e.target !== document.getElementById('modal')) return;
+            document.getElementById('modal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
