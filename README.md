@@ -110,63 +110,56 @@ Compared Zomato vs Swiggy vs EatSure across 7 capabilities. Key insight: Zomato 
 
 I designed both mobile and web prototypes using [Google Stitch](https://stitch.withgoogle.com/). Each screen maps to a specific step in the user flow.
 
+<div align="center">
+
+[![Live Interactive Prototype](https://img.shields.io/badge/📱_Live_Interactive_Prototype-Open_All_12_Screens_Gallery-E23744?style=for-the-badge&logo=googlechrome&logoColor=white)](https://rehansheikh787.github.io/Zomato-Multiorder-PRD-file-Portfolio/)
+
+<p><sub>Click above to launch the live, click-through web showcase with high-res zoom & step-by-step state details.</sub></p>
+
+</div>
+
 ### 📱 Mobile App Flow (7 Screens)
 
-`Home → Intro → Select Restaurant → Browse Menu → Multi-Cart → Checkout → Track`
+#### 📍 Stage 1: Discovery & Restaurant Selection (Steps 1–4)
+`Home → Intro Sheet → Restaurant Selection → Menu Browsing`
 
 <table>
   <tr>
-    <th align="center" width="25%">Step 1: Discovery</th>
-    <th align="center" width="25%">Step 2: Onboarding</th>
-    <th align="center" width="25%">Step 3: Pair Selection</th>
-    <th align="center" width="25%">Step 4: Active Menu</th>
-  </tr>
-  <tr>
     <td align="center" valign="top" width="25%">
       <img src="assets/mobile-prototypes/01-home-multiorder-discovery.png" alt="Home Discovery" width="100%"><br>
-      <sub><strong>Home Discovery</strong><br>P0 — Multiorder Hub Entry</sub>
+      <sub><strong>01. Home Discovery</strong><br>P0 — Multiorder Hub Entry</sub>
     </td>
     <td align="center" valign="top" width="25%">
       <img src="assets/mobile-prototypes/02-multiorder-intro-sheet.png" alt="Intro Sheet" width="100%"><br>
-      <sub><strong>Intro Sheet</strong><br>P0 — 3-Step Educational Sheet</sub>
+      <sub><strong>02. Intro Sheet</strong><br>P0 — 3-Step Educational Sheet</sub>
     </td>
     <td align="center" valign="top" width="25%">
       <img src="assets/mobile-prototypes/03-restaurant-selection.png" alt="Restaurant Selection" width="100%"><br>
-      <sub><strong>Pair Selection</strong><br>P0 — Smart Pairings</sub>
+      <sub><strong>03. Pair Selection</strong><br>P0 — Smart Pairings</sub>
     </td>
     <td align="center" valign="top" width="25%">
       <img src="assets/mobile-prototypes/04-restaurant-menu-active.png" alt="Menu Browsing" width="100%"><br>
-      <sub><strong>Menu Browsing</strong><br>P0 — Synced Cart Bar</sub>
+      <sub><strong>04. Menu Browsing</strong><br>P0 — Synced Cart Bar</sub>
     </td>
   </tr>
+</table>
+
+#### 🛒 Stage 2: Cart, Checkout & Live Tracking (Steps 5–7)
+`Multi-Cart → Single Checkout → Coordinated Tracking`
+
+<table>
   <tr>
-    <th align="center" width="25%">Step 5: Unified Cart</th>
-    <th align="center" width="25%">Step 6: Checkout</th>
-    <th align="center" width="25%">Step 7: Tracking</th>
-    <th align="center" width="25%">Interactive Prototype</th>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="25%">
-      <img src="assets/mobile-prototypes/05-multi-restaurant-cart.png" alt="Multi-Cart" width="100%"><br>
-      <sub><strong>Multi-Restaurant Cart</strong><br>P0 — Grouped by Kitchen</sub>
+    <td align="center" valign="top" width="33.3%">
+      <img src="assets/mobile-prototypes/05-multi-restaurant-cart.png" alt="Multi-Cart" width="80%"><br>
+      <sub><strong>05. Multi-Restaurant Cart</strong><br>P0 — Grouped by Kitchen</sub>
     </td>
-    <td align="center" valign="top" width="25%">
-      <img src="assets/mobile-prototypes/06-single-checkout.png" alt="Single Checkout" width="100%"><br>
-      <sub><strong>Single Checkout</strong><br>P1 — Consolidated Payment</sub>
+    <td align="center" valign="top" width="33.3%">
+      <img src="assets/mobile-prototypes/06-single-checkout.png" alt="Single Checkout" width="80%"><br>
+      <sub><strong>06. Single Checkout</strong><br>P1 — Consolidated Payment</sub>
     </td>
-    <td align="center" valign="top" width="25%">
-      <img src="assets/mobile-prototypes/07-coordinated-tracking.png" alt="Coordinated Tracking" width="100%"><br>
-      <sub><strong>Coordinated Tracking</strong><br>P2 — Synchronized Timeline</sub>
-    </td>
-    <td align="center" valign="middle" width="25%">
-      <br>
-      <a href="https://rehansheikh787.github.io/Zomato-Multiorder-PRD-file-Portfolio/" target="_blank">
-        <img src="https://img.shields.io/badge/Live_Prototype-Open_Gallery-E23744?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Prototype"><br><br>
-        <strong>📱 Test All 12 Screens</strong>
-      </a>
-      <br><br>
-      <sub>Click to interact with the full high-res interactive prototype gallery with zoom and state details.</sub>
-      <br><br>
+    <td align="center" valign="top" width="33.3%">
+      <img src="assets/mobile-prototypes/07-coordinated-tracking.png" alt="Coordinated Tracking" width="80%"><br>
+      <sub><strong>07. Coordinated Tracking</strong><br>P2 — Synchronized Timeline</sub>
     </td>
   </tr>
 </table>
@@ -177,51 +170,29 @@ I designed both mobile and web prototypes using [Google Stitch](https://stitch.w
 
 <table>
   <tr>
-    <th align="center" width="50%">Discovery & Pairings</th>
-    <th align="center" width="50%">Restaurant Hub Explorer</th>
-  </tr>
-  <tr>
     <td align="center" valign="top" width="50%">
       <img src="assets/web-prototypes/01-web-home-discovery.png" alt="Web Home" width="100%"><br>
-      <sub><strong>Home — Hub Pairs & Combos</strong> · P0</sub>
+      <sub><strong>01. Home — Hub Pairs & Combos</strong> · P0</sub>
     </td>
     <td align="center" valign="top" width="50%">
       <img src="assets/web-prototypes/02-web-restaurant-discovery.png" alt="Web Restaurants" width="100%"><br>
-      <sub><strong>Restaurant Discovery</strong> · P0</sub>
+      <sub><strong>02. Restaurant Discovery</strong> · P0</sub>
     </td>
-  </tr>
-  <tr>
-    <th align="center" width="50%">Menu Browsing with Synced Cart</th>
-    <th align="center" width="50%">Consolidated Single Checkout</th>
   </tr>
   <tr>
     <td align="center" valign="top" width="50%">
       <img src="assets/web-prototypes/03-web-menu-multiorder.png" alt="Web Menu" width="100%"><br>
-      <sub><strong>Menu with Multiorder Cart</strong> · P0</sub>
+      <sub><strong>03. Menu with Multiorder Cart</strong> · P0</sub>
     </td>
     <td align="center" valign="top" width="50%">
       <img src="assets/web-prototypes/04-web-single-checkout.png" alt="Web Checkout" width="100%"><br>
-      <sub><strong>Single Checkout</strong> · P1</sub>
+      <sub><strong>04. Single Checkout</strong> · P1</sub>
     </td>
   </tr>
   <tr>
-    <th align="center" width="50%">Coordinated Delivery Tracking</th>
-    <th align="center" width="50%">Fulfillment & Route Architecture</th>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <img src="assets/web-prototypes/05-web-coordinated-tracking.png" alt="Web Tracking" width="100%"><br>
-      <sub><strong>Coordinated Delivery Tracking</strong> · P2</sub>
-    </td>
-    <td align="left" valign="top" width="50%">
-      <br>
-      <strong>🚚 Order Fulfillment Architecture</strong>
-      <ul>
-        <li><sub><strong>Longest-Prep Anchor:</strong> Rider dispatch timer is synchronized to the longest kitchen prep time to keep meals hot.</sub></li>
-        <li><sub><strong>Batch Delivery Routing:</strong> Single-rider pickup when restaurants are within 800m of each other; independent riders otherwise.</sub></li>
-        <li><sub><strong>Isolated Partial Failure:</strong> If one kitchen cancels, sub-order 2 proceeds with partial refund automatically.</sub></li>
-      </ul>
-      <sub>👉 Detailed technical specs available in <a href="plan.md"><strong>plan.md</strong></a> and <a href="context.md"><strong>context.md</strong></a>.</sub>
+    <td align="center" valign="top" colspan="2">
+      <img src="assets/web-prototypes/05-web-coordinated-tracking.png" alt="Web Tracking" width="60%"><br>
+      <sub><strong>05. Coordinated Delivery Tracking</strong> · P2 — Synchronized dual-kitchen live map & ETA</sub>
     </td>
   </tr>
 </table>
